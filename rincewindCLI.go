@@ -1,32 +1,37 @@
 package main
 
 import (
-	"flag"
 	"fmt"
-	"os"
-
 	"github.com/TheScottBot/rincewind"
+	"github.com/jessevdk/go-flags"
+	"os"
 )
 
 var tempStdout *os.File
 
+type Options struct {
+	// Example of optional value
+	TranslationText string `short:"t" long:"text" description:"Text to be translated" required:"true"`
+	SourceLang      string `short:"s" long:"source" description:"Source text language code" optional:"yes" optional-value:"DE"`
+	TargetLang      string `short:"i" long:"intended" description:"Target translation language code" optional:"yes" optional-value:"EN"`
+}
+
+var options Options
+
 func main() {
+	_, err := flags.Parse(&options)
 
-	translation := flag.String("t", "flag -t unset", "Value to be translated")
-	targetLang := flag.String("ta", "flag -ta unset", "Target language")
-	sourceLang := flag.String("s", "flag -s unset", "Source")
+	if err != nil {
+		fmt.Println(err)
+	}
 
-	flag.Parse()
-
-	easterEgg(*translation)
+	easterEgg(options.TranslationText)
 	unassignStdout()
 
-	changeDefaults(targetLang, sourceLang)
-
 	translationRequest := rincewind.TranslationRequest{
-		TranslateText:  *translation,
-		SourceLanguage: *sourceLang,
-		TargetLanguage: *targetLang,
+		TranslateText:  options.TranslationText,
+		SourceLanguage: options.SourceLang,
+		TargetLanguage: options.TargetLang,
 	}
 
 	value, _ := rincewind.Translate(translationRequest)
