@@ -2,15 +2,15 @@ package main
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/TheScottBot/rincewind"
 	"github.com/jessevdk/go-flags"
-	"os"
 )
 
 var tempStdout *os.File
 
 type Options struct {
-	// Example of optional value
 	TranslationText string `short:"t" long:"text" description:"Text to be translated" required:"true"`
 	SourceLang      string `short:"s" long:"source" description:"Source text language code" optional:"yes" optional-value:"DE"`
 	TargetLang      string `short:"i" long:"intended" description:"Target translation language code" optional:"yes" optional-value:"EN"`
@@ -52,18 +52,6 @@ func unassignStdout() {
 
 func reassignStdout() {
 	os.Stdout = tempStdout
-}
-
-func changeDefaults(target *string, source *string) {
-	if *target == "flag -ta unset" {
-		fmt.Println("default target detected, setting to DE\n")
-		*target = "DE"
-	}
-
-	if *source == "flag -s unset" {
-		fmt.Println("default source detected, setting to EN\n")
-		*source = "EN"
-	}
 }
 
 func easterEgg(text string) {
